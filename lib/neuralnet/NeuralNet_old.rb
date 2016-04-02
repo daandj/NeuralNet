@@ -1,4 +1,5 @@
 require 'NMatrix'
+require 'benchmark'
 
 # Sigmoid function
 def nonlin(x, deriv=false)
@@ -27,7 +28,7 @@ syn0 = N.random([3, 1]) * 2 - 1
 # puts "Synaps 0 before learning."
 # puts syn0
 
-for i in 1..10000
+(0..10000).each do
   # forward propagation
   l0 = x
   l1 = nonlin(l0.dot syn0)
@@ -42,7 +43,8 @@ for i in 1..10000
 
   # update weights
   syn0 += l0.transpose.dot l1_delta
+
 end
 
 puts "Output after training:"
-puts l1
+puts nonlin(x.dot syn0)
