@@ -1,5 +1,4 @@
 require 'NMatrix'
-require 'benchmark'
 
 # Sigmoid function
 def nonlin(x, deriv=false)
