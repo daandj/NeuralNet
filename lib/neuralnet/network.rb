@@ -20,30 +20,7 @@ class Network
   def train(iterations)
     (0..iterations).each do
       forward_prop(@training_input)
-      # how much did we mis the target output?
-      @l_error[@number_hiddenlayers+1] = @training_output - @l[@number_hiddenlayers+1]
-
-      # multiply how much we missed by the
-      # slope of the sigmoid at the values in l1
-      @l_delta[@number_hiddenlayers+1] = @l_error[@number_hiddenlayers+1] *
-                                      nonlin(@l[@number_hiddenlayers+1], true)
-
-      # update the synapse connecting the last two layers
-      @syn[@number_hiddenlayers] += @l[@number_hiddenlayers].transpose.dot @l_delta[@number_hiddenlayers+1]
-
-      # back propagation for the remaining layers
-      if @number_hiddenlayers > 0
-        @number_hiddenlayers.downto(1) do |curr_l|
-          # how much did we miss?
-          @l_error[curr_l] = @l_delta[curr_l+1].dot(@syn[curr_l].transpose)
-          # multiply how much we missed by the
-          # slope of the sigmoid at the values in l1
-          @l_delta[curr_l] = @l_error[curr_l] * nonlin(@l[curr_l], true)
-          # puts "l1, l2_delta: " + @l[curr_l].shape.to_s + @l_delta[curr_l+1].shape.to_s
-          # update weights
-          @syn[curr_l-1] += @l[curr_l-1].transpose.dot @l_delta[curr_l]
-        end
-      end
+      back_prop
     end
   end
 
@@ -92,4 +69,30 @@ class Network
     end
   end
 
+  def back_prop
+    # how much did we mis the target output?
+    @l_error[@number_hiddenlayers+1] = @training_output - @l[@number_hiddenlayers+1]
+
+    # multiply how much we missed by the
+    # slope of the sigmoid at the values in l1
+    @l_delta[@number_hiddenlayers+1] = @l_error[@number_hiddenlayers+1] *
+                                    nonlin(@l[@number_hiddenlayers+1], true)
+
+    # update the synapse connecting the last two layers
+    @syn[@number_hiddenlayers] += @l[@number_hiddenlayers].transpose.dot @l_delta[@number_hiddenlayers+1]
+
+    # back propagation for the remaining layers
+    if @number_hiddenlayers > 0
+      @number_hiddenlayers.downto(1) do |curr_l|
+        # how much did we miss?
+        @l_error[curr_l] = @l_delta[curr_l+1].dot(@syn[curr_l].transpose)
+        # multiply how much we missed by the
+        # slope of the sigmoid at the values in l1
+        @l_delta[curr_l] = @l_error[curr_l] * nonlin(@l[curr_l], true)
+        # puts "l1, l2_delta: " + @l[curr_l].shape.to_s + @l_delta[curr_l+1].shape.to_s
+        # update weights
+        @syn[curr_l-1] += @l[curr_l-1].transpose.dot @l_delta[curr_l]
+      end
+    end
+  end
 end
