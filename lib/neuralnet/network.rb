@@ -52,7 +52,6 @@ class Network
     puts @syn[1]
   end
 
-  # TODO: Make the calculate method work for networks with multiple hidden layers.
   def calculate(input = @calculation_input)
     forward_prop(input)
     return @l.last
