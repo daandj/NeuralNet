@@ -18,9 +18,13 @@ class Network
   end
 
   def train(iterations)
-    (0..iterations).each do
+    (0..iterations).each_with_index do |index|
       forward_prop(@training_input)
       back_prop
+      if index % 1000 == 0
+        print "Average error iteration #{index.to_s.rjust(5)}: "
+        puts @l_error.last.mean
+      end
     end
   end
 
